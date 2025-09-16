@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:6
+    container_name: cs_mongo
+    volumes: [ cs_mongo:/data/db ]
+    networks: [ csnet ]
+
+  postgres:
+    image: postgres:15
+    container_name: cs_postgres
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - cs_pgdata:/var/lib/postgresql/data
+    networks: [ csnet ]
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./../backend/Dockerfile
+    container_name: cs_backend
+    env_file: ./backend/.env.local
+    ports:
+      - "5000:5000"
+    depends_on: [ mongo, postgres ]
+    networks: [ csnet ]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./../frontend/Dockerfile
+    container_name: cs_frontend
+    ports:
+      - "3000:80"
+    depends_on: [ backend ]
+    networks: [ csnet ]
+
+  realtime:
+    build:
+      context: ./realtime
+      dockerfile: ./../realtime/Dockerfile
+    container_name: cs_realtime
+    ports:
+      - "6000:6000"
+    networks: [ csnet ]
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: ./../worker/Dockerfile
+    container_name: cs_worker
+    networks: [ csnet ]
+
+volumes:
+  cs_mongo:
+  cs_pgdata:
+
+networks:
+  csnet:
+    driver: bridge
