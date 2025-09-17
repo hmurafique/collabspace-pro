@@ -87,24 +87,25 @@ collabspace-pro/
 4. **Start without Domain**
    ```bash
    cd home/ubuntu/deployment/collabspace-pro
-## docker compose -f docker-compose.yml up -d --build
+   docker compose -f docker-compose.yml up -d --build
 ```
 
 5. **With Domain + SSL — Option A (host nginx + certbot, recommended)**
    - Configure DNS A record: your.domain.com -> <SERVER_IP>
    - Install nginx & certbot:
-## sudo apt install -y nginx certbot python3-certbot-nginx
+   - sudo apt install -y nginx certbot python3-certbot-nginx
 # add nginx site to proxy to local containers (see repo README)
-## sudo certbot --nginx -d your.domain.com -m you@example.com --non-interactive --agree-tos
+   - sudo certbot --nginx -d your.domain.com -m you@example.com --non-interactive --agree-tos
    - Keep docker-compose.yml running. Nginx will proxy to container ports
 # Explain
 ## On the EC2 host:
 # Install nginx + certbot
-sudo apt update
-sudo apt install -y nginx certbot python3-certbot-nginx
+   - sudo apt update
+   - sudo apt install -y nginx certbot python3-certbot-nginx
 
 # Nginx site config (replace your.domain.com)
-sudo tee /etc/nginx/sites-available/collabspace <<'NGINX'
+
+   - sudo tee /etc/nginx/sites-available/collabspace <<'NGINX'
 server {
     listen 80;
     server_name your.domain.com;
@@ -115,18 +116,19 @@ server {
 }
 NGINX
 
-sudo ln -sf /etc/nginx/sites-available/collabspace /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
+   - sudo ln -sf /etc/nginx/sites-available/collabspace /etc/nginx/sites-enabled/
+   - sudo nginx -t && sudo systemctl reload nginx
 
 # Obtain cert
-sudo certbot --nginx -d your.domain.com --non-interactive --agree-tos -m you@example.com
+
+   - sudo certbot --nginx -d your.domain.com --non-interactive --agree-tos -m you@example.com
 
 6. **With Domain + SSL — Option B (containerized nginx + certbot)**
    - Use docker-compose.prod.yml which includes nginx and certbot
    - First time: request certs:
-## docker compose -f docker-compose.prod.yml up -d --build
-## docker-compose run --rm certbot certonly --webroot -w /var/www/certbot -d your.domain.com --email you@example.com --agree-tos --no-eff-email
-## docker compose -f docker-compose.prod.yml restart nginx
+   - docker compose -f docker-compose.prod.yml up -d --build
+   - docker-compose run --rm certbot certonly --webroot -w /var/www/certbot -d your.domain.com --email you@example.com --agree-tos --no-eff-email
+   - docker compose -f docker-compose.prod.yml restart nginx
 
 7. **CI/CD (GitHub Actions)**
 ## Add Secrets:
