@@ -10,6 +10,7 @@
 ---
 
 ## Repository Structure
+```
 collabspace-pro/
 ├── backend/
 │   ├── Dockerfile
@@ -49,6 +50,7 @@ collabspace-pro/
 │   └── workflows/
 │       └── deploy.yml             # GitHub Actions CI/CD
 └── README.md                      # full step-by-step (below)
+```
 
 ---
 
