@@ -100,14 +100,15 @@ collabspace-pro/
    - sudo certbot --nginx -d your.domain.com -m you@example.com --non-interactive --agree-tos
    - Keep docker-compose.yml running. Nginx will proxy to container ports
 
-*Explain*
-*On the EC2 host*
-*Install nginx + certbot*
+**Explain**
+**On the EC2 host**
+**Install nginx + certbot**
    - sudo apt update
    - sudo apt install -y nginx certbot python3-certbot-nginx
 
-*Nginx site config (replace your.domain.com)*
+**Nginx site config (replace your.domain.com)**
    - sudo tee /etc/nginx/sites-available/collabspace <<'NGINX'
+```bash
 server {
     listen 80;
     server_name your.domain.com;
@@ -119,8 +120,9 @@ server {
 NGINX
    - sudo ln -sf /etc/nginx/sites-available/collabspace /etc/nginx/sites-enabled/
    - sudo nginx -t && sudo systemctl reload nginx
+```
 
-*Obtain cert*
+**Obtain cert**
    - sudo certbot --nginx -d your.domain.com --non-interactive --agree-tos -m you@example.com
 
 ---
