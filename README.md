@@ -66,7 +66,7 @@ collabspace-pro/
 
 ## Setup Steps (step-by-step)
 
-1. **On your Server**
+## 1. **On your Server**
    ```bash
    sudo apt update
    sudo apt install -y docker.io docker-compose
@@ -75,7 +75,7 @@ collabspace-pro/
 ```
 ---
 
-2. **Create backend env file (server-side)**
+## 2. **Create backend env file (server-side)**
    ```bash
    touch home/ubuntu/deployment/collabspace-pro/backend/.env.local
    MONGO_URI=mongodb://mongo:27017/collabspace
@@ -84,16 +84,16 @@ collabspace-pro/
 ```
 ---
 
-3. **Creating Dockerfiles and docker-compose.yml files**
+## 3. **Creating Dockerfiles and docker-compose.yml files**
 
-4. **Start without Domain**
+## 4. **Start without Domain**
    ```bash
    cd home/ubuntu/deployment/collabspace-pro
    docker compose -f docker-compose.yml up -d --build
 ```
 ---
 
-5. **With Domain + SSL — Option A (host nginx + certbot, recommended)**
+## 5. **With Domain + SSL — Option A (host nginx + certbot, recommended)**
    - Configure DNS A record: your.domain.com -> <SERVER_IP>
    - Install nginx & certbot:
    - sudo apt install -y nginx certbot python3-certbot-nginx
@@ -127,7 +127,7 @@ NGINX
 
 ---
 
-6. **With Domain + SSL — Option B (containerized nginx + certbot)**
+## 6. **With Domain + SSL — Option B (containerized nginx + certbot)**
    - Use docker-compose.prod.yml which includes nginx and certbot
    - First time: request certs:
    - docker compose -f docker-compose.prod.yml up -d --build
@@ -136,7 +136,7 @@ NGINX
 
 ---
 
-7. **CI/CD (GitHub Actions)**
+## 7. **CI/CD (GitHub Actions)**
 ## Add Secrets:
    - SSH_PRIVATE_KEY (private key)
    - SSH_USER (e.g., ubuntu)
