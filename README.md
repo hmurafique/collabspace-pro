@@ -68,16 +68,19 @@ collabspace-pro/
 
 ## 1. **On your Server**
    ```bash
-   sudo apt update
-   sudo apt install -y docker.io docker-compose
-   sudo usermod -aG docker $USER
-   mkdir -p home/ubuntu/deployment/collabspace-pro
+   - sudo apt update
+   - sudo apt install -y docker.io docker-compose
+   - sudo usermod -aG docker $USER
+   - mkdir -p home/ubuntu/deployment/collabspace-pro
 ```
 ---
 
 ## 2. **Create backend env file (server-side)**
    ```bash
-   touch home/ubuntu/deployment/collabspace-pro/backend/.env.local
+   - touch home/ubuntu/deployment/collabspace-pro/backend/.env.local
+```
+---
+   ```bash
    MONGO_URI=mongodb://mongo:27017/collabspace
    JWT_SECRET=super-secret
    PORT=5000
@@ -88,8 +91,8 @@ collabspace-pro/
 
 ## 4. **Start without Domain**
    ```bash
-   cd home/ubuntu/deployment/collabspace-pro
-   docker compose -f docker-compose.yml up -d --build
+   - cd home/ubuntu/deployment/collabspace-pro
+   - docker compose -f docker-compose.yml up -d --build
 ```
 ---
 
@@ -102,7 +105,6 @@ collabspace-pro/
    - Keep docker-compose.yml running. Nginx will proxy to container ports
 ```
 ---
-
 **Explain:**
 **On the EC2 host**
 **Install nginx + certbot**
