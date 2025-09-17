@@ -96,18 +96,26 @@ collabspace-pro/
 ## 5. **With Domain + SSL — Option A (host nginx + certbot, recommended)**
    - Configure DNS A record: your.domain.com -> <SERVER_IP>
    - Install nginx & certbot:
+```bash
    - sudo apt install -y nginx certbot python3-certbot-nginx
    - sudo certbot --nginx -d your.domain.com -m you@example.com --non-interactive --agree-tos
    - Keep docker-compose.yml running. Nginx will proxy to container ports
+```
+---
 
-**Explain**
+**Explain:**
 **On the EC2 host**
 **Install nginx + certbot**
+```bash
    - sudo apt update
    - sudo apt install -y nginx certbot python3-certbot-nginx
+```
 
 **Nginx site config (replace your.domain.com)**
+```bash
    - sudo tee /etc/nginx/sites-available/collabspace <<'NGINX'
+```
+---
 ```bash
 server {
     listen 80;
@@ -118,22 +126,28 @@ server {
     location / { proxy_pass http://127.0.0.1:3000/; }
 }
 NGINX
+```
+---
+
+```bash
    - sudo ln -sf /etc/nginx/sites-available/collabspace /etc/nginx/sites-enabled/
    - sudo nginx -t && sudo systemctl reload nginx
 ```
 
 **Obtain cert**
+```bash
    - sudo certbot --nginx -d your.domain.com --non-interactive --agree-tos -m you@example.com
-
+```
 ---
 
 ## 6. **With Domain + SSL — Option B (containerized nginx + certbot)**
    - Use docker-compose.prod.yml which includes nginx and certbot
    - First time: request certs:
+```bash
    - docker compose -f docker-compose.prod.yml up -d --build
    - docker-compose run --rm certbot certonly --webroot -w /var/www/certbot -d your.domain.com --email you@example.com --agree-tos --no-eff-email
    - docker compose -f docker-compose.prod.yml restart nginx
-
+```
 ---
 
 ## 7. **CI/CD (GitHub Actions)**
