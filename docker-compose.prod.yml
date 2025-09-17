@@ -1,0 +1,71 @@
+#docker-compose.prod.yml — Option B: Containerized Nginx + certbot (production)
+
+version: "3.9"
+services:
+  mongo:
+    image: mongo:6
+    volumes: [ cs_mongo:/data/db ]
+    networks: [ csnet ]
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-example}
+    volumes: [ cs_pgdata:/var/lib/postgresql/data ]
+    networks: [ csnet ]
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./../devops/Dockerfile.backend
+    env_file: ./backend/.env.example
+    networks: [ csnet ]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./../devops/Dockerfile.frontend
+    networks: [ csnet ]
+
+  realtime:
+    build:
+      context: ./realtime
+      dockerfile: ./../devops/Dockerfile.realtime
+    networks: [ csnet ]
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: ./../devops/Dockerfile.worker
+    networks: [ csnet ]
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on: [ frontend, backend, realtime ]
+    networks: [ csnet ]
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done"
+    networks: [ csnet ]
+
+volumes:
+  cs_mongo:
+  cs_pgdata:
+  certbot_conf:
+  certbot_www:
+
+networks:
+  csnet:
+    driver: bridge
