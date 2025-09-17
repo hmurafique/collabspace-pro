@@ -73,6 +73,7 @@ collabspace-pro/
    sudo usermod -aG docker $USER
    mkdir -p home/ubuntu/deployment/collabspace-pro
 ```
+---
 
 2. **Create backend env file (server-side)**
    ```bash
@@ -81,6 +82,7 @@ collabspace-pro/
    JWT_SECRET=super-secret
    PORT=5000
 ```
+---
 
 3. **Creating Dockerfiles and docker-compose.yml files**
 
@@ -89,12 +91,12 @@ collabspace-pro/
    cd home/ubuntu/deployment/collabspace-pro
    docker compose -f docker-compose.yml up -d --build
 ```
+---
 
 5. **With Domain + SSL — Option A (host nginx + certbot, recommended)**
    - Configure DNS A record: your.domain.com -> <SERVER_IP>
    - Install nginx & certbot:
    - sudo apt install -y nginx certbot python3-certbot-nginx
-# add nginx site to proxy to local containers (see repo README)
    - sudo certbot --nginx -d your.domain.com -m you@example.com --non-interactive --agree-tos
    - Keep docker-compose.yml running. Nginx will proxy to container ports
 # Explain
@@ -123,12 +125,16 @@ NGINX
 
    - sudo certbot --nginx -d your.domain.com --non-interactive --agree-tos -m you@example.com
 
+---
+
 6. **With Domain + SSL — Option B (containerized nginx + certbot)**
    - Use docker-compose.prod.yml which includes nginx and certbot
    - First time: request certs:
    - docker compose -f docker-compose.prod.yml up -d --build
    - docker-compose run --rm certbot certonly --webroot -w /var/www/certbot -d your.domain.com --email you@example.com --agree-tos --no-eff-email
    - docker compose -f docker-compose.prod.yml restart nginx
+
+---
 
 7. **CI/CD (GitHub Actions)**
 ## Add Secrets:
@@ -139,6 +145,5 @@ NGINX
    - optional: BACKEND_ENV, DOMAIN_NAME, ADMIN_EMAIL
    - Push to main — workflow will build/pack & deploy.
 
-
-
+---
 
